@@ -10,6 +10,7 @@ import dto.BookDTO;
 import dto.LibrarianDTO;
 import dto.MemberDTO;
 import java.util.ArrayList;
+import java.util.Base64;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -44,29 +45,26 @@ public class GenericResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson()
-    {
+    public String getJson() {
         //TODO return proper representation object
         Command getBooksCommand = new GetAllBooksCommand();
         ArrayList<BookDTO> books = (ArrayList<BookDTO>) getBooksCommand.execute();
         return new Gson().toJson(books);
     }
-     @GET
+
+    @GET
     @Path("checkloginmember")
     @Produces(MediaType.APPLICATION_JSON)
-    public String checkLogin(@HeaderParam("Authorization") String auth)
-    {
+    public String checkLogin(@HeaderParam("Authorization") String auth) {
         System.out.println("CHECK LOGIN MEMBER");
         String[] data = decodeString(auth);
         String userName = "";
         String password = "";
-        try
-        {
+        try {
             //username and or password can be empty or null
             userName = data[0];
             password = data[1];
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
         }
 
         MemberDTO m = (MemberDTO) CommandFactory
@@ -76,8 +74,7 @@ public class GenericResource {
                         password)
                 .execute();
 
-        if (m != null)
-        {
+        if (m != null) {
             return new Gson().toJson(m, MemberDTO.class);
         }
         System.out.println("INVALID CREDENTIALS");
@@ -85,11 +82,11 @@ public class GenericResource {
 
         return new Gson().toJson(memberNull, MemberDTO.class);
     }
+
     @GET
     @Path("checkloginadmin")
     @Produces(MediaType.APPLICATION_JSON)
-    public String checkLoginAdmin(@HeaderParam("Authorization") String auth)
-    {
+    public String checkLoginAdmin(@HeaderParam("Authorization") String auth) {
         System.out.println("CHECK LOGIN ADMIN");
         String[] data = decodeString(auth);
         String[] data2 = checkForEmptyfields(data);
@@ -102,13 +99,28 @@ public class GenericResource {
                         password)
                 .execute();
 
-        if (librarian != null)
-        {
+        if (librarian != null) {
             return new Gson().toJson(librarian, LibrarianDTO.class);
         }
         System.out.println("INVALID CREDENTIALS");
 
         LibrarianDTO libNull = new LibrarianDTO(0, "", "", "");
         return new Gson().toJson(libNull, LibrarianDTO.class);
+    }
+
+    private String[] decodeString(String auth) {
+        String decodeString = "";
+        String[] authParts = auth.split(" ");
+        String authInfo = authParts[1];
+        byte[] bytes = null;
+        try {
+            bytes = Base64.getDecoder().decode(authInfo);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        decodeString = new String(bytes);
+        String[] details = decodeString.split(":");
+        return details;
+
     }
 }
