@@ -7,12 +7,14 @@ package command;
 
 import com.google.gson.Gson;
 import dto.BookDTO;
+import dto.MemberDTO;
 import java.util.ArrayList;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
@@ -47,5 +49,39 @@ public class GenericResource {
         Command getBooksCommand = new GetAllBooksCommand();
         ArrayList<BookDTO> books = (ArrayList<BookDTO>) getBooksCommand.execute();
         return new Gson().toJson(books);
+    }
+     @GET
+    @Path("checkloginmember")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String checkLogin(@HeaderParam("Authorization") String auth)
+    {
+        System.out.println("CHECK LOGIN MEMBER");
+        String[] data = decodeString(auth);
+        String userName = "";
+        String password = "";
+        try
+        {
+            //username and or password can be empty or null
+            userName = data[0];
+            password = data[1];
+        } catch (Exception ex)
+        {
+        }
+
+        MemberDTO m = (MemberDTO) CommandFactory
+                .createCommand(
+                        CommandFactory.CHECK_MEMBER_CREDENTIALS,
+                        userName,
+                        password)
+                .execute();
+
+        if (m != null)
+        {
+            return new Gson().toJson(m, MemberDTO.class);
+        }
+        System.out.println("INVALID CREDENTIALS");
+        MemberDTO memberNull = new MemberDTO(0, "", "", "");
+
+        return new Gson().toJson(memberNull, MemberDTO.class);
     }
 }
