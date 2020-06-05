@@ -5,6 +5,9 @@
  */
 package command;
 
+import com.google.gson.Gson;
+import dto.BookDTO;
+import java.util.ArrayList;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -33,21 +36,16 @@ public class GenericResource {
 
     /**
      * Retrieves representation of an instance of command.GenericResource
+     *
      * @return an instance of java.lang.String
      */
     @GET
-    @Produces(MediaType.APPLICATION_XML)
-    public String getXml() {
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getJson()
+    {
         //TODO return proper representation object
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * PUT method for updating or creating an instance of GenericResource
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.APPLICATION_XML)
-    public void putXml(String content) {
+        Command getBooksCommand = new GetAllBooksCommand();
+        ArrayList<BookDTO> books = (ArrayList<BookDTO>) getBooksCommand.execute();
+        return new Gson().toJson(books);
     }
 }
