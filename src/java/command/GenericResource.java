@@ -228,4 +228,25 @@ public class GenericResource {
                 .execute();
         return currentLoansForMember(loan.getMember().getId());
     }
+    
+    @POST
+    @Path("loans/history/{loanid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String addBookToLoanHistory(@PathParam("loanid") int loanid, String loanJsonString)
+    {
+
+        System.out.println("#################################");
+        System.out.println("RETURN BOOK :  loanid:" + loanid);
+
+        LoanDTO loan = new Gson().fromJson(loanJsonString, LoanDTO.class);
+
+        CommandFactory
+                .createCommand(
+                        CommandFactory.RETURN_BOOK,
+                        loan)
+                .execute();
+        return currentLoansForMember(loan.getMember().getId());
+
+    }
 }
