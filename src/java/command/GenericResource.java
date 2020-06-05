@@ -211,4 +211,21 @@ public class GenericResource {
                 .execute();
         return GetBookWithCopies(bookid);
     }
+
+    @PUT
+    @Path("loans/{loanid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String renewLoan(@PathParam("loanid") int loanid, String loanJsonString) {
+        System.out.println("#################################");
+        System.out.println("Renew Loan");
+        System.out.println(loanJsonString);
+        LoanDTO loan = new Gson().fromJson(loanJsonString, LoanDTO.class);
+        CommandFactory
+                .createCommand(
+                        CommandFactory.RENEW_LOAN,
+                        loan)
+                .execute();
+        return currentLoansForMember(loan.getMember().getId());
+    }
 }
