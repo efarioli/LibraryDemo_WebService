@@ -7,8 +7,10 @@ package command;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dbase.BookGateway;
 import dbase.MemberGateway;
 import dto.BookDTO;
+import dto.CopyDTO;
 import dto.LibrarianDTO;
 import dto.LoanDTO;
 import dto.MemberDTO;
@@ -174,5 +176,21 @@ public class GenericResource {
                         CommandFactory.ALL_BOOKS)
                 .execute();
         return new Gson().toJson(books);
+    }
+    @GET
+    @Path("books/{bookid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String GetBookWithCopies(@PathParam("bookid") int bookid)
+    {
+        System.out.println("GET BOOK WITH COPIES");
+        BookGateway bg = new BookGateway();
+        BookDTO book = bg.findBook(bookid);
+        BookDTO bookToDisplay = (BookDTO) CommandFactory
+                .createCommand(
+                        CommandFactory.ADD_COPIES_TO_BOOK,
+                        book)
+                .execute();
+        ArrayList<CopyDTO> copies = book.getCopies();
+        return new Gson().toJson(bookToDisplay);
     }
 }
