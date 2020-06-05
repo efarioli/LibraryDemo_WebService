@@ -143,11 +143,11 @@ public class GenericResource {
         resArr[1] = password;
         return resArr;
     }
+
     @GET
     @Path("members/{userid}/loans")
     @Produces(MediaType.APPLICATION_JSON)
-    public String currentLoansForMember(@PathParam("userid") int userId)
-    {
+    public String currentLoansForMember(@PathParam("userid") int userId) {
         System.out.println("CURRENT LOANS FOR MEMBER");
         Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithModifiers(Modifier.STATIC).create();
         //the exclude modifier static - make the transient property been ignored
@@ -162,5 +162,17 @@ public class GenericResource {
 
 //        System.out.println(gson.toJson(loans));
         return gson.toJson(loans);
+    }
+
+    @GET
+    @Path("books")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String GetAllBooks() {
+        System.out.println("GET ALL THE BOOKS");
+        ArrayList<BookDTO> books = (ArrayList<BookDTO>) CommandFactory
+                .createCommand(
+                        CommandFactory.ALL_BOOKS)
+                .execute();
+        return new Gson().toJson(books);
     }
 }
