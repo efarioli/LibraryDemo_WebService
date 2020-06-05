@@ -269,4 +269,24 @@ public class GenericResource {
                 .execute();
         return new Gson().toJson(new ResultDTO("one copy borrowed"));
     }
+    @GET
+    @Path("loanhistory/{memberid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String loanHistory(@PathParam("memberid") int memberId)
+    {
+        Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithModifiers(Modifier.STATIC).create();
+        //the exclude modifier static - make the transient property been ignored
+
+        System.out.println("#################################");
+        System.out.println("Loan History");
+
+        ArrayList<LoanDTO> loans = (ArrayList<LoanDTO>) CommandFactory
+                .createCommand(
+                        CommandFactory.LOAN_HISTORY_FOR_MEMBER,
+                        memberId)
+                .execute();
+
+        return gson.toJson(loans);
+    }
 }
