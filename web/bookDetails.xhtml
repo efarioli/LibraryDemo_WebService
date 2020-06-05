@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Member area</title>
+    </h:head>
+    <h:body>
+        <h1>Member Area</h1>
+        <h2><h:outputText value="#{user.member.name}" /></h2>
+
+        <h:form>
+            <h3>Book Details</h3>
+            <h:panelGrid columns="2">
+                <h:outputText value="Title:" />
+                <h:outputText value="#{user.bookToDisplay.title}" />
+                
+                <h:outputText value="Author:" />
+                <h:outputText value="#{user.bookToDisplay.author}" />
+                
+                <h:outputText value="ISBN:" />
+                <h:outputText value="#{user.bookToDisplay.isbn}" />
+                
+                <h:outputText value="Num. copies:" />
+                <h:outputText value="#{user.bookToDisplay.numberOfCopies}" />
+            </h:panelGrid>
+            
+            <h:dataTable border="1" 
+                         value="#{user.bookToDisplay.copies}" 
+                         var="copy" >
+                <h:column>
+                    <f:facet name="header">Copy id</f:facet>
+                    <h:outputText value="#{copy.id}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Status</f:facet>
+                    <h:outputText value="#{copy.status}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton type="submit" value="Borrow" action="#{user.borrowCopy(copy)}" disabled="#{copy.onLoan || copy.referenceOnly}" />
+                </h:column>
+            </h:dataTable>
+
+            <br/>
+            <h:commandButton type="submit" value="Back" action="allBooks" />
+        </h:form>
+    </h:body>
+</html>
+

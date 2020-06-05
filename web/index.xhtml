@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Login</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputText value="Username: " />
+                <h:inputText value="#{user.username}"
+                             required="true"
+                             requiredMessage="Please enter your username" />
+
+                <h:outputText value="Password: " />
+                <h:inputSecret value="#{user.password}"
+                               required="true"
+                               requiredMessage="Please enter your password" />
+
+                <h:outputText value="User type: " />
+                <h:selectOneRadio value="#{user.userType}" >
+                    <f:selectItem itemValue = "1" itemLabel = "Member" /> 
+                    <f:selectItem itemValue = "2" itemLabel = "Librarian" />
+                </h:selectOneRadio>
+            </h:panelGrid>
+            
+            <h:messages style="color: red;" />
+            
+            <h:commandButton type="submit" value="Log in" action="#{user.checkCredentials()}" />
+        </h:form>
+    </h:body>
+</html>
+

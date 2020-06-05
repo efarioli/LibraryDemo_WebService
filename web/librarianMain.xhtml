@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Librarian area</title>
+    </h:head>
+    <h:body>
+        <h1>Librarian Area</h1>
+        <h2><h:outputText value="#{user.librarian.name}" /></h2>
+
+        <h:form>
+            <h3>All Books</h3>
+            <h:dataTable border="1" 
+                         value="#{user.allBooks}" 
+                         var="book" >
+                <h:column>
+                    <f:facet name="header">Title</f:facet>
+                    <h:outputText value="#{book.title}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Author</f:facet>
+                    <h:outputText value="#{book.author}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">ISBN</f:facet>
+                    <h:outputText value="#{book.isbn}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton type="submit" value="View details" action="#{user.displayBook(book)}" />
+                </h:column>
+            </h:dataTable>
+
+            <br/>
+            <h:commandButton type="submit" value="Log out" action="#{user.logout()}" />
+        </h:form>
+    </h:body>
+</html>
+

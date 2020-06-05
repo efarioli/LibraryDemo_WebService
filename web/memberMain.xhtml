@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Member area</title>
+    </h:head>
+    <h:body>
+        <h1>Member Area</h1>
+        <h2><h:outputText value="#{user.member.name}" /></h2>
+
+        <h:form>
+            <h3>Current Loans</h3>
+            <h:dataTable border="1" 
+                         value="#{user.currentLoansForMember}" 
+                         var="loan" >
+                <h:column>
+                    <f:facet name="header">Book</f:facet>
+                    <b><h:outputText value="#{loan.copy.book.title}" /></b><br/>
+                    &nbsp;&nbsp;<h:outputText value="#{loan.copy.book.author}" /><br/>
+                    &nbsp;&nbsp;<h:outputText value="#{loan.copy.book.isbn}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Borrowed</f:facet>
+                    <h:outputText value="#{loan.loanDate}" converter="calendarConverter" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Due date</f:facet>
+                    <h:outputText value="#{loan.dueDate}" converter="calendarConverter" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Num. Renewals</f:facet>
+                    <h:outputText value="#{loan.numberOfRenewals}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Actions</f:facet>
+                    <h:commandButton type="submit" value="Renew" action="#{user.renewLoan(loan)}" disabled="#{!loan.renewable}" />&nbsp;
+                    <h:commandButton type="submit" value="Return" action="#{user.returnCopy(loan)}" />
+                </h:column>
+            </h:dataTable>
+
+            <br/>
+            <h:commandButton type="submit" value="View loan history" action="loanHistory" />
+            &nbsp;&nbsp;
+            <h:commandButton type="submit" value="View all books" action="allBooks" />
+            &nbsp;&nbsp;
+            <h:commandButton type="submit" value="Log out" action="#{user.logout()}" />
+        </h:form>
+    </h:body>
+</html>
+
