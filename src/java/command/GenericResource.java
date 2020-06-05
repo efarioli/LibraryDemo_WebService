@@ -7,6 +7,7 @@ package command;
 
 import com.google.gson.Gson;
 import dto.BookDTO;
+import dto.LibrarianDTO;
 import dto.MemberDTO;
 import java.util.ArrayList;
 import javax.ws.rs.core.Context;
@@ -83,5 +84,31 @@ public class GenericResource {
         MemberDTO memberNull = new MemberDTO(0, "", "", "");
 
         return new Gson().toJson(memberNull, MemberDTO.class);
+    }
+    @GET
+    @Path("checkloginadmin")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String checkLoginAdmin(@HeaderParam("Authorization") String auth)
+    {
+        System.out.println("CHECK LOGIN ADMIN");
+        String[] data = decodeString(auth);
+        String[] data2 = checkForEmptyfields(data);
+        String userName = data2[0];
+        String password = data2[1];
+        LibrarianDTO librarian = (LibrarianDTO) CommandFactory
+                .createCommand(
+                        CommandFactory.CHECK_LIBRARIAN_CREDENTIALS,
+                        userName,
+                        password)
+                .execute();
+
+        if (librarian != null)
+        {
+            return new Gson().toJson(librarian, LibrarianDTO.class);
+        }
+        System.out.println("INVALID CREDENTIALS");
+
+        LibrarianDTO libNull = new LibrarianDTO(0, "", "", "");
+        return new Gson().toJson(libNull, LibrarianDTO.class);
     }
 }
