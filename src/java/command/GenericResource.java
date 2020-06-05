@@ -6,9 +6,13 @@
 package command;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dbase.MemberGateway;
 import dto.BookDTO;
 import dto.LibrarianDTO;
+import dto.LoanDTO;
 import dto.MemberDTO;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Base64;
 import javax.ws.rs.core.Context;
@@ -19,6 +23,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -137,5 +142,25 @@ public class GenericResource {
         resArr[0] = userName;
         resArr[1] = password;
         return resArr;
+    }
+    @GET
+    @Path("members/{userid}/loans")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String currentLoansForMember(@PathParam("userid") int userId)
+    {
+        System.out.println("CURRENT LOANS FOR MEMBER");
+        Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithModifiers(Modifier.STATIC).create();
+        //the exclude modifier static - make the transient property been ignored
+
+        MemberGateway mg = new MemberGateway();
+        MemberDTO member = mg.findMemberByUserId(userId);
+        ArrayList<LoanDTO> loans = (ArrayList<LoanDTO>) CommandFactory
+                .createCommand(
+                        CommandFactory.CURRENT_LOANS_FOR_MEMBER,
+                        member)
+                .execute();
+
+//        System.out.println(gson.toJson(loans));
+        return gson.toJson(loans);
     }
 }
