@@ -123,4 +123,19 @@ public class GenericResource {
         return details;
 
     }
+
+    private String[] checkForEmptyfields(String[] strArray) {
+        String[] resArr = new String[2];
+        String userName = "";
+        String password = "";
+        try {
+            //username and or password can be empty or null
+            userName = strArray[0];
+            password = strArray[1];
+        } catch (Exception ex) {
+        }
+        resArr[0] = userName;
+        resArr[1] = password;
+        return resArr;
+    }
 }
