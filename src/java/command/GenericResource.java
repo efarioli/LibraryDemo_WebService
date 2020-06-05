@@ -14,6 +14,7 @@ import dto.CopyDTO;
 import dto.LibrarianDTO;
 import dto.LoanDTO;
 import dto.MemberDTO;
+import dto.ResultDTO;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -228,13 +229,12 @@ public class GenericResource {
                 .execute();
         return currentLoansForMember(loan.getMember().getId());
     }
-    
+
     @POST
     @Path("loans/history/{loanid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public String addBookToLoanHistory(@PathParam("loanid") int loanid, String loanJsonString)
-    {
+    public String addBookToLoanHistory(@PathParam("loanid") int loanid, String loanJsonString) {
 
         System.out.println("#################################");
         System.out.println("RETURN BOOK :  loanid:" + loanid);
@@ -248,5 +248,25 @@ public class GenericResource {
                 .execute();
         return currentLoansForMember(loan.getMember().getId());
 
+    }
+
+    @PUT
+    @Path("member/{memberid}/borrowcopy/{copyid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String borrowCopy(@PathParam("memberid") int memberId, @PathParam("copyid") int copyId) {
+
+        System.out.println("#################################");
+        System.out.println("Borrow Copy");
+        System.out.println("Member id " + memberId);
+        System.out.println("Copy id " + copyId);
+
+        CommandFactory
+                .createCommand(
+                        CommandFactory.BORROW_BOOK,
+                        memberId,
+                        copyId)
+                .execute();
+        return new Gson().toJson(new ResultDTO("one copy borrowed"));
     }
 }
