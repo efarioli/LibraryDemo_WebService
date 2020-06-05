@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
@@ -177,11 +178,11 @@ public class GenericResource {
                 .execute();
         return new Gson().toJson(books);
     }
+
     @GET
     @Path("books/{bookid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String GetBookWithCopies(@PathParam("bookid") int bookid)
-    {
+    public String GetBookWithCopies(@PathParam("bookid") int bookid) {
         System.out.println("GET BOOK WITH COPIES");
         BookGateway bg = new BookGateway();
         BookDTO book = bg.findBook(bookid);
@@ -192,5 +193,22 @@ public class GenericResource {
                 .execute();
         ArrayList<CopyDTO> copies = book.getCopies();
         return new Gson().toJson(bookToDisplay);
+    }
+
+    @POST
+    @Path("books/{bookid}/copies/{numofcopyes}/{isref}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String addCopies(@PathParam("bookid") int bookid, @PathParam("numofcopyes") int num, @PathParam("isref") boolean isref) {
+        System.out.println("ADD COPIES" + isref);
+
+        CommandFactory
+                .createCommand(
+                        CommandFactory.CREATE_COPIES_FOR_BOOK,
+                        bookid,
+                        num,
+                        isref)
+                .execute();
+        return GetBookWithCopies(bookid);
     }
 }
